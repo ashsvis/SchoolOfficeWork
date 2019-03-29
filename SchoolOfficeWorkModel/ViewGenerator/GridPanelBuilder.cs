@@ -171,7 +171,7 @@ namespace ViewGenerator
                         if (count++ == 0) continue;
                         break;
                     case "System.String":
-                        if (PropertyPanelBuilder.SetPasswordMode(userClass, prop, new TextBox())) continue;
+                        if (PropertyPanelBuilder.CheckPasswordMode(userClass, prop)) continue;
                         width = 120;
                         break;
                     case "System.Int32":    // для целочисленных свойств
@@ -228,7 +228,10 @@ namespace ViewGenerator
                     else if (prop.PropertyType == typeof(int))
                         value = ((int)prop.GetValue(item)).ToString("0");
                     else if (prop.PropertyType == typeof(string))
+                    {
+                        if (PropertyPanelBuilder.CheckPasswordMode(userClass, prop)) continue;
                         value = prop.GetValue(item)?.ToString();
+                    }
                     else if (prop.PropertyType == typeof(Guid))
                         value = GetLookupName(prop, item, userModel);
                     else

@@ -1,5 +1,6 @@
 ﻿using Model;
 using System;
+using System.IO;
 using System.Windows.Forms;
 using ViewGenerator;
 
@@ -19,22 +20,36 @@ namespace SchoolOfficeWorkView
             MessageBox.Show(this, message, caption, MessageBoxButtons.OK, MessageBoxIcon.Error);
         }
 
-        private void tsmiPartitions_Click(object sender, EventArgs e)
+        private void tsmiDictionaries_DropDownOpening(object sender, EventArgs e)
         {
-            pnlContainer.Controls.Clear();
-            pnlContainer.Controls.Add(GridPanelBuilder.BuildPropertyPanel(_school, new Partition(), _school.Partitions));
+            tsmiDictionaries.DropDownItems.Clear();
+            foreach (var tableName in _school.GetTableNames())
+            {
+                var tsmi = new ToolStripMenuItem { Text = tableName };
+                tsmi.Click += (o, arg) => 
+                {
+                    pnlContainer.Controls.Clear();
+                    var tableItem = _school.GetTableInfo(tableName);
+                    if (tableItem != null)
+                        pnlContainer.Controls.Add(GridPanelBuilder.BuildPropertyPanel(_school, tableItem.Item, tableItem.Table));
+                };
+                tsmiDictionaries.DropDownItems.Add(tsmi);
+            }
         }
 
-        private void tsmiEmployees_Click(object sender, EventArgs e)
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            pnlContainer.Controls.Clear();
-            pnlContainer.Controls.Add(GridPanelBuilder.BuildPropertyPanel(_school, new Employee(), _school.Employees));
+            SaverLoader.SaveToFile(Path.ChangeExtension(Application.ExecutablePath, ".bin"), _school);
         }
 
-        private void tsmiApproiments_Click(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
-            pnlContainer.Controls.Clear();
-            pnlContainer.Controls.Add(GridPanelBuilder.BuildPropertyPanel(_school, new Appointment(), _school.Appointments));
+            var fileName = Path.ChangeExtension(Application.ExecutablePath, ".bin");
+            if (File.Exists(fileName))
+            {
+                _school = SaverLoader.LoadFromFile(fileName);
+                _school.RegistryTables();
+            }
         }
     }
 }

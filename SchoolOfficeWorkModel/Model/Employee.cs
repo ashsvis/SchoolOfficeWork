@@ -23,12 +23,6 @@ namespace Model
         [Description("Должность"), DataLookup("IdAppointment", "Appointments")]
         public Guid IdAppointment { get; set; }
 
-        [Description("Системное имя"), DataNotEmpty]
-        public string Login { get; set; }
-
-        [Description("Пароль"), DataNotEmpty, DataPassword]
-        public string Password { get; set; }
-
         [Description("Кабинет"), DataNotEmpty]
         public string Cabinet { get; set; }
 
@@ -41,13 +35,29 @@ namespace Model
         [Description("Подразделение"), DataLookup("IdPartition", "Partitions")]
         public Guid IdPartition { get; set; }
 
+        [Description("Системное имя"), DataNotEmpty]
+        public string Login { get; set; }
+
+        [Description("Пароль"), DataPassword]
+        public string Password { get; set; }
+   
         [Description("Администрирование\n системы")]
         public bool AS { get; set; }
-        //public bool AD { get; set; }
-        //public bool RK { get; set; }
-        //public bool KIZ { get; set; }
-        //public bool CR { get; set; }
-        //public bool SRF { get; set; }
+
+        [Description("Администрирование\n документооборота")]
+        public bool AD { get; set; }
+
+        [Description("Расширенный\n контроль")]
+        public bool RK { get; set; }
+
+        [Description("Контроль\n исполнения задания")]
+        public bool KIZ { get; set; }
+
+        [Description("Создание\n отчётов")]
+        public bool CR { get; set; }
+
+        [Description("Создание\n регистрационных\n форм")]
+        public bool SRF { get; set; }
 
         public int CompareTo(Employee other)
         {

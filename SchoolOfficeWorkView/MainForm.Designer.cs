@@ -30,11 +30,8 @@
         {
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.tsmiDictionaries = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiPartitions = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.pnlContainer = new System.Windows.Forms.Panel();
-            this.tsmiEmployees = new System.Windows.Forms.ToolStripMenuItem();
-            this.tsmiApproiments = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -50,20 +47,10 @@
             // 
             // tsmiDictionaries
             // 
-            this.tsmiDictionaries.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmiPartitions,
-            this.tsmiApproiments,
-            this.tsmiEmployees});
             this.tsmiDictionaries.Name = "tsmiDictionaries";
             this.tsmiDictionaries.Size = new System.Drawing.Size(69, 20);
             this.tsmiDictionaries.Text = "Каталоги";
-            // 
-            // tsmiPartitions
-            // 
-            this.tsmiPartitions.Name = "tsmiPartitions";
-            this.tsmiPartitions.Size = new System.Drawing.Size(202, 22);
-            this.tsmiPartitions.Text = "Список подразделений";
-            this.tsmiPartitions.Click += new System.EventHandler(this.tsmiPartitions_Click);
+            this.tsmiDictionaries.DropDownOpening += new System.EventHandler(this.tsmiDictionaries_DropDownOpening);
             // 
             // statusStrip1
             // 
@@ -81,20 +68,6 @@
             this.pnlContainer.Size = new System.Drawing.Size(564, 256);
             this.pnlContainer.TabIndex = 2;
             // 
-            // tsmiEmployees
-            // 
-            this.tsmiEmployees.Name = "tsmiEmployees";
-            this.tsmiEmployees.Size = new System.Drawing.Size(202, 22);
-            this.tsmiEmployees.Text = "Список сотрудников";
-            this.tsmiEmployees.Click += new System.EventHandler(this.tsmiEmployees_Click);
-            // 
-            // tsmiApproiments
-            // 
-            this.tsmiApproiments.Name = "tsmiApproiments";
-            this.tsmiApproiments.Size = new System.Drawing.Size(202, 22);
-            this.tsmiApproiments.Text = "Список должностей";
-            this.tsmiApproiments.Click += new System.EventHandler(this.tsmiApproiments_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -107,6 +80,8 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "MainForm";
             this.Text = "Делопроизводство гимназии";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
@@ -118,11 +93,8 @@
 
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem tsmiDictionaries;
-        private System.Windows.Forms.ToolStripMenuItem tsmiPartitions;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.Panel pnlContainer;
-        private System.Windows.Forms.ToolStripMenuItem tsmiEmployees;
-        private System.Windows.Forms.ToolStripMenuItem tsmiApproiments;
     }
 }
 

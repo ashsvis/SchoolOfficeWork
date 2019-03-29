@@ -151,7 +151,7 @@ namespace ViewGenerator
                         // добавляем редактор текста во второй столбец строки сетки
                         grid.Controls.Add(textBox, 1, row);
                         // добавляем обработчик для этого редактора в список действий
-                        actions.Add(TextValue(userClass, prop, textBox));
+                        actions.Add(safeEditMode ? PasswordValue(userClass, prop, textBox) : TextValue(userClass, prop, textBox));
                         if (safeEditMode)
                         {
                             row++;
@@ -268,14 +268,20 @@ namespace ViewGenerator
                         checkBox = new CheckBox
                         {
                             Name = "cb" + prop.Name,
-                            Text = string.Empty,
+                            Text = (bool)prop.GetValue(userClass) ? "Да" : "Нет",
                             Dock = DockStyle.Fill,
                             Width = 70,
+                            TabStop = true,
                             TabIndex = row
                         };
                         // получаем текущее значение
                         checkBox.Checked = Convert.ToBoolean(prop.GetValue(userClass));
-                        checkBox.CheckedChanged += (o, e) => { btnOk.Enabled = true; };
+                        checkBox.CheckedChanged += (o, e) => 
+                        {
+                            var ch = (CheckBox)o;
+                            ch.Text = ch.Checked ? "Да" : "Нет";
+                            btnOk.Enabled = true;
+                        };
                         // добавляем редактор даты во второй столбец строки сетки
                         grid.Controls.Add(checkBox, 1, row);
                         // добавляем обработчик для этого редактора в список действий
@@ -406,12 +412,28 @@ namespace ViewGenerator
             // получаем из коллекции атрибутов ссылку на атрибут дескриптора свойства
             var mAttribute = (DataPasswordAttribute)attributes[typeof(DataPasswordAttribute)];
             if (mAttribute == null) return false;
+            textBox.Text = string.Empty;
             var ch = mAttribute.PasswordChar;
             if (ch == '\0')
                 textBox.UseSystemPasswordChar = true;
             else
                 textBox.PasswordChar = ch;
             return true;
+        }
+
+        /// <summary>
+        /// Проверка признака защищённого ввода текста в атрибуте свойства
+        /// </summary>
+        /// <param name="userClass">объект со свойствами</param>
+        /// <param name="prop">ссылка на свойство</param>
+        /// <returns>Признак защищённого ввода текста</returns>
+        public static bool CheckPasswordMode(object userClass, PropertyInfo prop)
+        {
+            // получаем ссылку на коллекцию атрибутов свойства
+            var attributes = TypeDescriptor.GetProperties(userClass)[prop.Name].Attributes;
+            // получаем из коллекции атрибутов ссылку на атрибут дескриптора свойства
+            var mAttribute = (DataPasswordAttribute)attributes[typeof(DataPasswordAttribute)];
+            return mAttribute != null;
         }
 
         /// <summary>
@@ -559,6 +581,22 @@ namespace ViewGenerator
                     throw new Exception($"Свойство \"{caption}\":{Environment.NewLine}Ожидалось не пустое значение свойства");
                 }
                 prop.SetValue(userClass, textBox.Text);
+            };
+        }
+
+        /// <summary>
+        /// Обработчик значения из текстового редактора пароля
+        /// </summary>
+        /// <param name="userClass">объект со свойствами</param>
+        /// <param name="prop">ссылка на свойство</param>
+        /// <param name="textBox">ссылка на компонент TextBox</param>
+        /// <returns>Ссылка на действие для присвоения значения из текстового редактора свойству объекта userClass</returns>
+        private Action PasswordValue(object userClass, PropertyInfo prop, TextBox textBox)
+        {
+            return () =>
+            {
+                if (!string.IsNullOrWhiteSpace(textBox.Text))
+                    prop.SetValue(userClass, textBox.Text);
             };
         }
     }
